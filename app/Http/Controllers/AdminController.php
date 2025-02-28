@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Wallet;
-assasasasasasasasasasasasasasasasasasasas;
 class AdminController extends Controller
 {
     // Menampilkan halaman login
