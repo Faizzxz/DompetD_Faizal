@@ -109,6 +109,66 @@ class WalletController extends Controller
     
         return redirect()->back()->with('error', 'Top-up sudah diproses sebelumnya.');
     }
+
+    public function withdraw(Request $request)
+{
+    $request->validate([
+        'amount' => 'required|numeric|min:1000'
+    ]);
+
+    $user = Auth::user();
+    $wallet = Wallet::firstOrCreate(['user_id' => $user->id]);
+
+    if ($wallet->balance < $request->amount) {
+        return back()->with('error', 'Saldo tidak mencukupi untuk tarik tunai.');
+    }
+
+    // Kurangi saldo
+    $wallet->balance -= $request->amount;
+    $wallet->save();
+
+    // Catat transaksi
+    Transaction::create([
+        'sender_id' => $user->id,
+        'receiver_id' => null,
+        'amount' => $request->amount,
+        'type' => 'withdraw'
+    ]);
+
+    return back()->with('success', 'Tarik tunai berhasil.');
+}
+
+public function pay(Request $request)
+{
+    $request->validate([
+        'merchant' => 'required|string|max:255',
+        'amount' => 'required|numeric|min:1000',
+    ]);
+
+    $user = Auth::user();
+    $wallet = Wallet::firstOrCreate(['user_id' => $user->id]);
+
+    if ($wallet->balance < $request->amount) {
+        return back()->with('error', 'Saldo tidak mencukupi untuk pembayaran.');
+    }
+
+    // Kurangi saldo pengguna
+    $wallet->balance -= $request->amount;
+    $wallet->save();
+
+    // Catat transaksi pembayaran
+    Transaction::create([
+        'sender_id' => $user->id,
+        'receiver_id' => null, // Karena ini transaksi ke merchant eksternal
+        'amount' => $request->amount,
+        'type' => 'payment',
+        'description' => 'Pembayaran ke ' . $request->merchant
+    ]);
+
+    return back()->with('success', 'Pembayaran berhasil.');
+}
+
+
     
 
 }

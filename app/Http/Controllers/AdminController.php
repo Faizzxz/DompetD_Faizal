@@ -190,6 +190,15 @@ class AdminController extends Controller
     ]);
 
     return redirect()->back()->with('success', 'Akun siswa berhasil ditambahkan.');
+
+    
+}
+public function removeStudent($id)
+{
+    $siswa = User::where('role', 'siswa')->findOrFail($id);
+    $siswa->delete();
+
+    return redirect()->back()->with('success', 'Akun siswa berhasil dihapus.');
 }
 
 }

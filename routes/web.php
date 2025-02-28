@@ -35,6 +35,8 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::put('update/{id}', [AdminController::class, 'update'])->name('admin.update');
     Route::delete('delete/{id}', [AdminController::class, 'destroy'])->name('admin.delete');
 });
+Route::post('/siswa/withdraw', [WalletController::class, 'withdraw'])->name('siswa.withdraw');
+Route::post('/siswa/pay', [WalletController::class, 'pay'])->name('siswa.pay');
 
 
 // Route Siswa (Hanya untuk Role Siswa)
@@ -52,8 +54,10 @@ Route::post('/bank/topup/{id}/confirm', [WalletController::class, 'confirmTopUp'
 // Route Bank (Hanya untuk Role Bank)
 Route::middleware(['auth'])->prefix('bank')->group(function () {
     Route::get('/', [AdminController::class, 'bankPage'])->name('bank.page');
-    Route::post('/bank/add-student', [AdminController::class, 'addStudent'])->name('bank.addStudent');
+    Route::post('/add-student', [AdminController::class, 'addStudent'])->name('bank.addStudent');
+    Route::delete('/remove-student/{id}', [AdminController::class, 'removeStudent'])->name('bank.removeStudent'); // Perbaikan rute di sini
 });
+
 
 //  Route Wallet
 Route::middleware(['auth'])->prefix('wallet')->group(function () {

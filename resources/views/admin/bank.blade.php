@@ -17,7 +17,7 @@
             background-color: #007bff;
             color: white;
         }
-        .btn-success, .btn-primary {
+        .btn-success, .btn-primary, .btn-danger {
             border-radius: 20px;
             font-weight: bold;
         }
@@ -75,6 +75,37 @@
                             <form action="{{ route('bank.confirmTopUp', $topup->id) }}" method="POST">
                                 @csrf
                                 <button type="submit" class="btn btn-success btn-sm">Konfirmasi</button>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Daftar Akun Siswa -->
+    <div class="card p-4 mt-4">
+        <h5 class="text-center text-danger">Daftar Akun Siswa</h5>
+        <table class="table table-hover text-center">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Nama Siswa</th>
+                    <th>Email</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach(App\Models\User::where('role', 'siswa')->get() as $siswa)
+                    <tr>
+                        <td>{{ $loop->iteration }}</td>
+                        <td>{{ $siswa->name }}</td>
+                        <td>{{ $siswa->email }}</td>
+                        <td>
+                            <form action="{{ route('bank.removeStudent', $siswa->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus akun ini?');">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
                             </form>
                         </td>
                     </tr>
